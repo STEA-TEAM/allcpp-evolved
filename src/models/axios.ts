@@ -2,13 +2,32 @@ export interface EventInfo {
   id: number;
   name: string;
   enterAddress: string;
+  enterTime: number;
+  endTime: number;
+  tag: string;
+  doujinshiNum: number;
+  clubNum: number;
+  logoPicUrl: string;
+  typeId: number;
+  type: string;
+}
+
+export interface Event {
+  id: number;
+  name: string;
+  enterAddress: string;
   enterTime: Date;
   endTime: Date;
-  tag: string;
+  tag: string[];
+  doujinshiNum: number;
+  clubNum: number;
   logoPicUrl: string;
+  typeId: number;
+  type: string;
 }
+
 export interface EventList {
-  list: EventInfo[];
+  list: Event[];
   pages: number;
   size: number;
   total: number;

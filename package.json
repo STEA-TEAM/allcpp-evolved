@@ -1,6 +1,6 @@
 {
   "name": "allcpp-evolved",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A third-party ALLCPP webpage powered by Quasar",
   "productName": "ALLCPP Evolved",
   "author": "ParticleG <particle_g@outlook.com>",
@@ -19,6 +19,7 @@
     "pinia": "^2.0.35",
     "pinia-plugin-persistedstate": "^3.1.0",
     "quasar": "^2.11.10",
+    "v-viewer": "^3.0.11",
     "vue": "^3.2.47",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6"
@@ -49,5 +50,6 @@
     "npm": ">= 6.13.4",
     "pnpm": ">= 8.2.0",
     "yarn": ">= 1.21.1"
-  }
+  },
+  "web-types": "./web-types.json"
 }

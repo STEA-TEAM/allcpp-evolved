@@ -2,40 +2,69 @@
 import humanizeDuration from 'humanize-duration';
 import { date } from 'quasar';
 import { Ref, ref } from 'vue';
-import { useApi } from 'boot/axios';
-import { EventInfo } from 'src/models/axios';
 import { useI18n } from 'vue-i18n';
-import langMap from 'src/consts/langMap';
+
+import { useApi } from 'boot/axios';
+
+import langMap from 'src/constants/langMap';
+import { Event } from 'src/models/axios';
 
 const api = useApi();
 const { locale, t } = useI18n();
+
+const colors = ['grey', 'green', 'blue', 'orange', 'purple', 'red'];
+const events: Ref<Event[]> = ref([]);
 const i18n = (relativePath) => {
   return t('components.EventList.' + relativePath);
 };
-
-const events: Ref<EventInfo[]> = ref([]);
-
 const onLoad = async (index, done) => {
   const { total, list } = await api.getEvents(index, 10);
-  console.log(index * 10, total);
-  console.log((list[0].enterTime - new Date()) / 1000 / 3600 / 24);
   events.value = events.value.concat(list);
   done(index * 10 >= total);
 };
 </script>
 
 <template>
-  <q-infinite-scroll :offset="150" @load="onLoad">
+  <q-infinite-scroll @load="onLoad">
     <div class="row q-col-gutter-md">
       <div
-        v-for="(event, index) in events"
-        :key="index"
+        v-for="(event, eventIndex) in events"
+        :key="eventIndex"
         class="col-12 col-md-6 col-lg-4 col-xl-3"
       >
         <q-card>
-          <q-img :src="event.logoPicUrl" />
-          <q-card-section class="justify-between" horizontal>
+          <q-img
+            v-ripple
+            v-viewer
+            :src="event.logoPicUrl"
+            class="cursor-pointer"
+          />
+          <q-card-section
+            v-ripple
+            class="cursor-pointer justify-between"
+            horizontal
+          >
             <q-card-section>
+              <div class="row items-center q-gutter-x-md">
+                <q-badge :color="colors[event.typeId]">
+                  {{ event.type }}
+                </q-badge>
+                <div class="row items-center q-gutter-x-xs">
+                  <div class="text-primary">
+                    {{ event.doujinshiNum }}
+                  </div>
+                  <div>
+                    {{ i18n('labels.doujinshi') }}
+                  </div>
+                  <q-separator vertical />
+                  <div class="text-primary">
+                    {{ event.clubNum }}
+                  </div>
+                  <div>
+                    {{ i18n('labels.club') }}
+                  </div>
+                </div>
+              </div>
               <div class="text-h6">
                 {{ event.name }}
               </div>
@@ -50,7 +79,7 @@ const onLoad = async (index, done) => {
                 {{ event.endTime.toLocaleDateString() }}
               </div>
             </q-card-section>
-            <q-card-section>
+            <q-card-section class="q-gutter-y-sm">
               <div class="text-body-2 text-weight-light">
                 {{
                   i18n('labels.start') +
@@ -63,15 +92,52 @@ const onLoad = async (index, done) => {
               </div>
               <div class="text-body-2 text-weight-light">
                 {{
-                  i18n("labels.lasts") +
-                  humanizeDuration(date.addToDate(event.endTime, { days: 1 }) - event.enterTime, {
-                    language: langMap[locale] ?? locale,
-                    largest: 2,
-                    units: ["d", "h", "m", "s", "ms"]
-                  })
+                  i18n('labels.lasts') +
+                  humanizeDuration(
+                    date.addToDate(event.endTime, { days: 1 }) -
+                      event.enterTime,
+                    {
+                      language: langMap[locale] ?? locale,
+                      largest: 2,
+                      units: ['d', 'h', 'm', 's', 'ms'],
+                    }
+                  )
                 }}
               </div>
+              <q-btn
+                :label="i18n('labels.info')"
+                color="primary"
+                icon="info"
+                no-caps
+                outline
+                rounded
+                @click.prevent.stop
+              />
             </q-card-section>
+          </q-card-section>
+          <q-separator />
+          <q-card-section>
+            <div class="row">
+              <q-chip
+                v-for="(tagName, tagIndex) in event.tag"
+                :key="tagIndex"
+                :label="tagName"
+                class="non-selectable cursor-pointer"
+                @click.prevent.stop
+              />
+            </div>
+          </q-card-section>
+          <q-separator />
+          <q-card-section class="row justify-around">
+            <q-btn
+              :label="i18n('labels.wannaGo')"
+              color="red"
+              flat
+              icon="favorite_border"
+              no-caps
+              rounded
+            />
+            <q-btn color="primary" flat icon="share" round />
           </q-card-section>
         </q-card>
       </div>

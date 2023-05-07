@@ -19,10 +19,12 @@ const api = axios.create({
 const useApi = () => ({
   getEvents: async (index = 1, size = 10): Promise<EventList> => {
     const data = (await api.get('/event', { params: { index, size } })).data;
-    data.list.forEach((event: EventInfo) => {
-      event.enterTime = new Date(event.enterTime);
-      event.endTime = new Date(event.endTime);
-    });
+    data.list = data.list.map((event: EventInfo) => ({
+      ...event,
+      enterTime: new Date(event.enterTime),
+      endTime: new Date(event.endTime),
+      tag: event.tag.split('|'),
+    }));
     return data;
   },
 });

@@ -7,5 +7,17 @@ export default {
         start: '开始于：'
       }
     }
-  }
+  },
+  headers: {
+    MainHeader: {
+      labels: {
+        title: 'ALLCPP Evolved',
+        routes: {
+          event: '活动',
+          discovery: '发现',
+          home: '主页',
+        },
+      },
+    },
+  },
 };
